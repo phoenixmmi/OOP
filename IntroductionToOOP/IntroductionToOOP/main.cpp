@@ -2,6 +2,8 @@
 //#define BASICS
 //#define ENCAPSULATION
 //#define CONSTRUCTORS
+//#define ASSIGNMENT_CHECK
+//#define DISTANCE_CHECK
 class Point
 {
 	double x;
@@ -57,18 +59,46 @@ public:
 		std::cout << "Destructor:\t" << this << std::endl;
 	}
 	//operators
-	void operator=(const Point& other)
+	Point operator=(const Point& other)
 	{
 		this->x = other.x;
 		this->y = other.y;
 		std::cout << "CopyAssignment:" << this << std::endl;
+		return *this;
 	}
 	// Methods
 	void print()const
 	{
 		std::cout << "x= " << x << "\t" << "y = " << y << std::endl;
 	}
+
+	/*double distance(const Point& other)const
+	{
+		double x_distance = this->x - other.x;
+		double y_distance = this->y - other.y;
+		double distance = sqrt((x_distance*x_distance)+(y_distance*y_distance));
+		return distance;
+	}*/
+	double distance(const Point& other)const
+	{
+		return sqrt(pow(this->x - other.x, 2) + pow(this->y - other.y, 2));
+	}
+
+	Point add(const Point& other)
+	{
+
+	}
+	
+
 };
+
+double distance(const Point& A, const Point& B)
+{
+	double x_distance = B.get_x() - A.get_x();
+	double y_distance = B.get_y() - A.get_y();
+	double distance = sqrt((x_distance*x_distance) + (y_distance*y_distance));
+	return distance;
+}
 
 void main()
 {
@@ -92,6 +122,7 @@ void main()
 	A.set_y(3);
 	std::cout << A.get_x() << "\t" << A.get_y() << std::endl;
 #endif
+
 #ifdef CONSTRUCTORS
 	const Point B;//Обьявление константного обьекта
 	//std::cout << B.get_x() << std::endl;
@@ -113,13 +144,47 @@ void main()
 	G = E;
 #endif
 
-	Point A(5, 2);
+#ifdef ASSIGNMENT_CHECK
+	/*Point A(5, 2);
 	A.print();
 	int a = 2;
 	int b = 3;
 	a = b;
 	Point B; //default contructor
 	B = A;//copy assignment
+	B.print();*/
+#endif
+	/*double x1, x2, y1, y2;
+	std::cout << "Введите координаты: " << std::endl;
+	std::cout << "x1 = "; std::cin >> x1;
+	std::cout << "x2 = "; std::cin >> x2;
+	std::cout << "y1= "; std::cin >> y1;
+	std::cout << "y2 = "; std::cin >> y2;
+	std::cout << "distance=" << distance(x1, y1, x2, y2) << std::endl;*/
+
+	/* Вызов функции
+	Point A(2,5);
+	Point B(3,7);
+
+	std::cout << distance(A, B)<< std::endl;*/
+#ifdef  DISTANCE_CHECK
+	Point A(5, 2);
+	Point B(8, 3);
+	std::cout << A.distance(B) << std::endl;
+	std::cout << distance(A, B) << std::endl;
+	A.print();
 	B.print();
+
+#endif
+	/*Point A, B, C;
+	A = B = C = Point(5, 3);*/
+
+	int a = 2;
+	int b = 3;
+	int c = a + b;
+
+	Point A(5, 2);
+	Point B(8, 3);
+	Point C = A + B;
 
 }
