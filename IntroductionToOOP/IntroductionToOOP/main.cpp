@@ -59,13 +59,30 @@ public:
 		std::cout << "Destructor:\t" << this << std::endl;
 	}
 	//operators
-	Point operator=(const Point& other)
+	Point& operator=(const Point& other)
 	{
 		this->x = other.x;
 		this->y = other.y;
 		std::cout << "CopyAssignment:" << this << std::endl;
 		return *this;
 	}
+
+	Point& operator+=(const Point& other)
+	{
+		this->x += other.x;
+		this->y += other.y;
+		return *this;
+	}
+
+	/*Point operator+(const Point& other)const 
+	{
+		Point result;
+		result.x = this->x + other.x;
+		result.y = this->y + other.y;
+		std::cout << "operator +" << std::endl;
+		return result;
+	}*/
+
 	// Methods
 	void print()const
 	{
@@ -83,13 +100,6 @@ public:
 	{
 		return sqrt(pow(this->x - other.x, 2) + pow(this->y - other.y, 2));
 	}
-
-	Point add(const Point& other)
-	{
-
-	}
-	
-
 };
 
 double distance(const Point& A, const Point& B)
@@ -100,6 +110,15 @@ double distance(const Point& A, const Point& B)
 	return distance;
 }
 
+Point operator+(const Point& left, const Point& right)
+{
+	/*Point result;
+	result.set_x(left.get_x()+right.get_x());
+	result.set_y(left.get_y()+right.get_y());*/
+	std::cout << "Global operator + " << std::endl;
+	//return result;
+	return Point(left.get_x() + right.get_x(), left.get_y() + right.get_y());
+}
 void main()
 {
 	setlocale(LC_ALL, "");
@@ -185,6 +204,16 @@ void main()
 
 	Point A(5, 2);
 	Point B(8, 3);
-	Point C = A + B;
+	std::cout << "\n------------------------------------\n";
+	Point C = A+B;
+	std::cout << "\n------------------------------------\n";
+	//C = A + B;
+	C.print();
+	std::cout << "\n------------------------------------\n";
+	//A+B+C+A;
+	//A.operator+(B).operator+(C).operator+(A).print();
+	std::cout << "\n------------------------------------\n";
 
+	A.print();
+	B.print();
 }
