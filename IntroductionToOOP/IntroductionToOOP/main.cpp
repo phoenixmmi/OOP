@@ -73,15 +73,57 @@ public:
 		this->y += other.y;
 		return *this;
 	}
+	Point& operator-=(const Point& other)
+	{
+		this->x -= other.x;
+		this->y -= other.y;
+		return *this;
+	}
+	Point& operator*=(const Point& other)
+	{
+		this->x *= other.x;
+		this->y *= other.y;
+		return *this;
+	}
+	Point& operator/=(const Point& other)
+	{
+		this->x /= other.x;
+		this->y /= other.y;
+		return *this;
+	}
 
-	/*Point operator+(const Point& other)const 
+	Point operator+(const Point& other)const 
 	{
 		Point result;
 		result.x = this->x + other.x;
 		result.y = this->y + other.y;
 		std::cout << "operator +" << std::endl;
 		return result;
-	}*/
+	}
+	Point operator-(const Point& other)const
+	{
+		Point result;
+		result.x = this->x - other.x;
+		result.y = this->y - other.y;
+		std::cout << "operator -" << std::endl;
+		return result;
+	}
+	Point operator*(const Point& other)const
+	{
+		Point result;
+		result.x = this->x * other.x;
+		result.y = this->y * other.y;
+		std::cout << "operator *" << std::endl;
+		return result;
+	}
+	Point operator/(const Point& other)const
+	{
+		Point result;
+		result.x = this->x / other.x;
+		result.y = this->y / other.y;
+		std::cout << "operator /" << std::endl;
+		return result;
+	}
 
 	// Methods
 	void print()const
@@ -110,15 +152,15 @@ double distance(const Point& A, const Point& B)
 	return distance;
 }
 
-Point operator+(const Point& left, const Point& right)
-{
-	/*Point result;
-	result.set_x(left.get_x()+right.get_x());
-	result.set_y(left.get_y()+right.get_y());*/
-	std::cout << "Global operator + " << std::endl;
-	//return result;
-	return Point(left.get_x() + right.get_x(), left.get_y() + right.get_y());
-}
+//Point operator+(const Point& left, const Point& right)
+//{
+//	/*Point result;
+//	result.set_x(left.get_x()+right.get_x());
+//	result.set_y(left.get_y()+right.get_y());*/
+//	std::cout << "Global operator + " << std::endl;
+//	//return result;
+//	return Point(left.get_x() + right.get_x(), left.get_y() + right.get_y());
+//}
 void main()
 {
 	setlocale(LC_ALL, "");
@@ -202,18 +244,28 @@ void main()
 	int b = 3;
 	int c = a + b;
 
-	Point A(5, 2);
+	Point A(3, 2);
 	Point B(8, 3);
 	std::cout << "\n------------------------------------\n";
-	Point C = A+B;
-	std::cout << "\n------------------------------------\n";
+	Point C = A + B;
 	//C = A + B;
+	C.print();
+	std::cout << "\n------------------------------------\n";
+	C = A - B;
+	//C = A - B;
+	C.print();
+	std::cout << "\n------------------------------------\n";
+	C = A * B;
+	//C = A * B;
+	C.print();
+	std::cout << "\n------------------------------------\n";
+	C = A / B;
+	//C = A / B;
 	C.print();
 	std::cout << "\n------------------------------------\n";
 	//A+B+C+A;
 	//A.operator+(B).operator+(C).operator+(A).print();
 	std::cout << "\n------------------------------------\n";
-
 	A.print();
 	B.print();
 }
