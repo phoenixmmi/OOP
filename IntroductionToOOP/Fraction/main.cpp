@@ -1,21 +1,34 @@
-#include <iostream>
+#include<iostream>
+#include<algorithm>
+#include<cmath>
 
-class Fraction                      
+class Fraction;
+std::ostream& operator<<(std::ostream& os, const Fraction& obj);
+void reduce();
 
+class Fraction
 {
 	int integer;
 	int numerator;
 	int denominator;
 public:
+	//		Type cost operators:
+	explicit operator int()
+	{
+		return this->integer;
+	}
+
+
+	//		Methods
 	int get_integer() const
 	{
 		return this->integer;
 	}
-	int get_numerator()const
+	int get_numerator() const
 	{
 		return this->numerator;
 	}
-	int get_debominator()const
+	int get_denominator() const
 	{
 		return this->denominator;
 	}
@@ -29,48 +42,88 @@ public:
 	}
 	void set_denominator(int denominator)
 	{
-		if (denominator != 0)
+		if (denominator)
 		{
 			this->denominator = denominator;
 		}
 		else
 		{
-			//this->denominator = 1;
-			throw std::exception("F^cking F^ck, nizya tak delat'!!!!");
+			throw std::exception("F#cking F#ck, davay tak ne delat");
 		}
-
-		//this->denominator = denominator ? denominator : 1;
 	}
-	
-	/*Fraction()
-	{
-		integer = 0;
-		numerator = 0;
-		denominator = 1;
-		std::cout << "DefaultConstructor:\t" << this << std::endl;
-	}*/
 
-	Fraction(double  integer = 0, double numerator = 0, double denominator = 1 )
+	//			Constructors:
+	Fraction() :integer(0), numerator(0), denominator(1)
+	{
+		/*this->integer = 0;
+		this->numerator = 0;
+		this->denominator = 1;*/
+		std::cout << "DefaultConstructor:\t" << this << std::endl;
+	}
+	explicit Fraction(int integer) :integer(integer), numerator(0), denominator(1)
+	{
+		/*this->integer = integer;
+		this->numerator = 0;
+		this->denominator = 1;*/
+		std::cout << "SingleArgConstructor(int):\t" << this << std::endl;
+	}
+	Fraction(double number)
+	{
+		integer = number;
+		long double buffer = (number - integer);
+		//buffer *= 1000000000;
+		//buffer = round(buffer);
+		/*int i = 0;
+		for (; buffer > (int)buffer; i++)
+		{
+			buffer *= 10;
+		}*/
+		numerator = round(buffer * 1000000000);
+		denominator = 1000000000;
+		//Fraction result = *this;
+		reduce();
+
+		/*integer = number;
+		number -= integer;
+
+		for (int i = 0; i < 9; i++)
+		{
+			number *= 10;
+			denominator *= 10;
+		}
+		std::cout << number << std::endl;*/
+
+		std::cout << "SingleArgConstructor(double):\t" << this << std::endl;
+	}
+	Fraction(int numerator, int denominator) :
+		integer(0), numerator(numerator), denominator(denominator ? denominator : 1)
+	{
+		/*this->integer = 0;
+		this->numerator = numerator;
+		this->denominator = denominator;*/
+		std::cout << "DoubleArgConstructor:\t" << this << std::endl;
+	}
+	Fraction(int integer, int numerator, int denominator)
 	{
 		this->integer = integer;
 		this->numerator = numerator;
 		this->denominator = denominator;
-
-		std::cout << "Constuctor:\t" << this << std::endl;
+		std::cout << "Constructor:\t" << this << std::endl;
 	}
 	Fraction(const Fraction& other)
 	{
 		this->integer = other.integer;
 		this->numerator = other.numerator;
 		this->denominator = other.denominator;
-
 		std::cout << "CopyConstructor:" << this << std::endl;
-
 	}
 	~Fraction()
 	{
 		std::cout << "Destructor:\t" << this << std::endl;
 	}
+
+	//		Operators:
+	//					=	=	=	=	=
 	Fraction& operator=(const Fraction& other)
 	{
 		this->integer = other.integer;
@@ -80,177 +133,305 @@ public:
 		return *this;
 	}
 
-	Fraction& operator+=(const Fraction& other)
+	//					++	++	++	++	++
+	Fraction& operator++()
 	{
-		this->integer += other.integer;
-		this->numerator += other.numerator;
-		this->denominator += other.denominator;
+		this->integer++;
 		return *this;
 	}
-	Fraction& operator-=(const Fraction& other)
+	Fraction& operator++(int)
 	{
-		this->integer -= other.integer;
-		this->numerator -= other.numerator;
-		this->denominator -= other.denominator;
-		return *this;
-	}
-	Fraction& operator*=(const Fraction& other)
-	{
-		this->integer *= other.integer;
-		this->numerator *= other.numerator;
-		this->denominator *= other.denominator;
-		return *this;
-	}
-	Fraction& operator/=(const Fraction& other)
-	{
-		this->integer /= other.integer;
-		this->numerator /= other.numerator;
-		this->denominator /= other.denominator;
-		return *this;
+		Fraction temp = *this;
+		this->integer++;
+		return temp;
 	}
 
-	Fraction operator+(const Fraction& other)const
+	Fraction operator+(const Fraction other)
 	{
 		Fraction result;
 		result.integer = this->integer + other.integer;
-		result.numerator = this->numerator + other.numerator;
-		result.denominator = this->denominator + other.denominator;
+		result.numerator = this->numerator * other.denominator + other.numerator * this->denominator;
+		result.denominator = this->denominator * other.denominator;
+		result.reduce();
+		result.to_proper();
 		std::cout << "operator +" << std::endl;
 		return result;
 	}
-	Fraction operator-(const Fraction& other)const
+	Fraction operator-(const Fraction other)
 	{
 		Fraction result;
-		result.integer = this->integer - other.integer;
-		result.numerator = this->numerator - other.numerator;
-		result.denominator = this->denominator - other.denominator;
+		result.numerator = (this->integer * this->denominator + this->numerator) * other.denominator - (other.integer * other.denominator + other.numerator) * this->denominator;
+		result.denominator = this->denominator*other.denominator;
+		result.reduce();
+		result.to_proper();
 		std::cout << "operator -" << std::endl;
 		return result;
 	}
-	Fraction operator*(const Fraction& other)const
+	/*Fraction operator*(const Fraction other)
+	{
+	Fraction result;
+	result.numerator = (this->integer * this->denominator + this->numerator)*(other.integer*other.denominator + other.numerator);
+	result.denominator = this->denominator* other.denominator;
+	result.reduce();
+	result.to_proper();
+	std::cout << "operator *" << std::endl;
+	return result;
+	}*/
+	Fraction operator/(const Fraction other)
 	{
 		Fraction result;
-		result.integer = this->integer * other.integer;
-		result.numerator = this->numerator * other.numerator;
-		result.denominator = this->denominator * other.denominator;
-		std::cout << "operator *" << std::endl;
-		return result;
-	}
-	Fraction operator/(const Fraction& other)const
-	{
-		Fraction result;
-		result.integer = this->integer / other.integer;
-		result.numerator = this->numerator / other.numerator;
-		result.denominator = this->denominator / other.denominator;
+		result.numerator = (this->integer * this->denominator + this->numerator)*other.denominator;
+		result.denominator = this->denominator*(other.integer*other.denominator + other.numerator);
+		result.reduce();
+		result.to_proper();
 		std::cout << "operator /" << std::endl;
 		return result;
 	}
-	//metods
-	void print()const
+
+
+
+	void print()
 	{
-		std::cout << "integer= " << integer << "\t" << "numerator = " << numerator<< "\t"<< "denominator= " << denominator << std::endl;
+		if (!numerator)
+		{
+			std::cout << integer << std::endl;
+		}
+		else if (!integer)
+		{
+			std::cout << numerator << "/" << denominator << std::endl;
+		}
+		else
+		{
+			std::cout << integer << " [" << numerator << "/" << denominator << "]" << std::endl;
+		}
 	}
 
 	void to_proper()
 	{
-		int numerator;
-		int denominator;
-		int integer;
-		std::cout << "Введите целую часть: "; std::cin >> integer;
-			std::cout << "Введите числитель: "; std::cin >> numerator;
-			std::cout << "Введите знаменитель: "; std::cin >> denominator;
-		if (numerator > denominator)
+		if (numerator >= denominator)
 		{
-			integer+=numerator / denominator;
-			numerator = (numerator % denominator);
+			integer += numerator / denominator;
+			numerator %= denominator;
 		}
-		else
-		{
-			std::cout << "Дробь и так правильная." << std::endl;
-		}
-		std::cout << "Целая часть: " << integer << std::endl;
-		std::cout << "Числитель: " << numerator << std::endl;
-		std::cout << "Знаменитель: " << denominator << std::endl;
-
 	}
 
 	void to_improper()
 	{
-		int numerator;
-		int denominator;
-		int integer;
-		std::cout << "Введите целую часть: "; std::cin >> integer;
-		std::cout << "Введите числитель: "; std::cin >> numerator;
-		std::cout << "Введите знаменитель: "; std::cin >> denominator;
-
-		if (numerator < denominator)
-		{
-			numerator += integer * denominator;
-			integer = 0;
-		}
-		else {
-			std::cout << "Дробь и так неправильная" << std::endl;
-		}
-		std::cout << "Целая часть: " << integer << std::endl;
-		std::cout << "Числитель: " << numerator << std::endl;
-		std::cout << "Знаменитель: " << denominator << std::endl;
+		numerator += integer * denominator;
+		integer = 0;
 	}
+
 	void reduce()
 	{
-		int numerator;
-		int denominator;
-		int integer;
-		std::cout << "Введите целую часть: "; std::cin >> integer;
-		std::cout << "Введите числитель: "; std::cin >> numerator;
-		std::cout << "Введите знаменитель: "; std::cin >> denominator;
-		if (denominator % numerator == 0)
+		/*int larger = std::max(numerator, denominator);
+		int fewer = std::min(numerator, denominator);
+		int remainder = 0;*/
+
+		int larger, fewer;
+		if (numerator > denominator)
 		{
-			denominator = denominator / numerator;
-			numerator=numerator
+			larger = numerator;
+			fewer = denominator;
 		}
-		std::cout << "Целая часть: " << integer << std::endl;
-		std::cout << "Числитель: " << numerator << std::endl;
-		std::cout << "Знаменитель: " << denominator << std::endl;
+		else
+		{
+			larger = denominator;
+			fewer = numerator;
+		}
+		int remainder = larger % fewer;
+
+		do
+		{
+			remainder = larger % fewer;
+			larger = fewer;
+			fewer = remainder;
+		} while (remainder);
+
+		/*if (larger % fewer == 0)
+		{
+			nod = fewer;
+		}
+
+		else if ((fewer % (larger % fewer)) == 0)
+		{
+			nod = larger % fewer;
+		}
+		else if (((larger % fewer) % (fewer % (larger % fewer))) == 0)
+		{
+			nod = fewer % (larger % fewer);
+		}
+		else
+		{
+			nod = 1;
+		}*/
+
+		int GCD = larger;	//Greatest Common Divisor
+		numerator /= GCD;
+		denominator /= GCD;
 	}
+
 };
+
+Fraction operator*(Fraction left, Fraction right)
+{
+	left.to_improper();
+	right.to_improper();
+	Fraction result(left.get_numerator()*right.get_numerator(), left.get_denominator()*right.get_denominator());
+	result.reduce();
+	result.to_proper();
+	return result;
+}
+
+bool operator<(Fraction left, Fraction right)
+{
+	left.to_improper();
+	right.to_improper();
+
+	return left.get_numerator()*right.get_denominator() < right.get_numerator()*left.get_denominator();
+
+	//int result = left.get_numerator()*right.get_denominator() / left.get_denominator() / right.get_numerator();
+	//(result > 1) ? std::cout << right << ">" << left << std::endl : (result < 1) ? std::cout << right << "<" << left << std::endl : std::cout << left << "=" << right << std::endl;
+}
+bool operator>(Fraction left, Fraction right)
+{
+	left.to_improper();
+	right.to_improper();
+
+	return left.get_numerator()*right.get_denominator() > right.get_numerator()*left.get_denominator();
+}
+bool operator==(Fraction left, Fraction right)
+{
+	left.to_improper();
+	right.to_improper();
+
+	return left.get_numerator()*right.get_denominator() == right.get_numerator()*left.get_denominator();
+
+}
+
+std::ostream& operator<<(std::ostream& os, const Fraction& obj)
+{
+	if (!obj.get_numerator())
+	{
+		std::cout << obj.get_integer() << std::endl;
+	}
+	else if (!obj.get_integer())
+	{
+		std::cout << obj.get_numerator() << "/" << obj.get_denominator() << std::endl;
+	}
+	else
+	{
+		std::cout << obj.get_integer() << " [" << obj.get_numerator() << "/" << obj.get_denominator() << "]" << std::endl;
+	}
+	return os;
+}
+
+
+
+//#define CONSTRUCTORS_CHECK
+//#define OPERATORS
+//#define OPERATORS_CHECK
+//#define TYPE_CONVERSION
 
 void main()
 {
 	setlocale(LC_ALL, "");
+
+
+#ifdef OPERATORS
+
+	Fraction A(1, 4);
+	A.print();
+	Fraction B(7, 4);
+	B.print();
+	Fraction C = A * B;
+	C.print();
+	operator<(A, B);
+
+#endif // OPERATORS
+
+
+#ifdef CONSTRUCTORS_CHECK
 	Fraction A;
 	try
 	{
 		A.set_integer(2);
-		A.set_numerator(3);
+		A.set_numerator(9);
 		A.set_denominator(4);
 	}
 	catch (std::exception e)
 	{
-	std::cerr << e.what() << std::endl;
+		std::cerr << e.what() << std::endl;
 	}
+	A.print();
+	A.to_proper();
+	A.print();
+	A.to_improper();
+	A.print();
 
-	std::cout << "\n------------------------------------\n";
-	const Fraction B;
+	Fraction B;
+	try
+	{
+		B.set_integer(2);
+		B.set_numerator(3600);
+		B.set_denominator(840);
+	}
+	catch (std::exception e)
+	{
+		std::cerr << e.what() << std::endl;
+	}
 	B.print();
-	std::cout << "\n------------------------------------\n";
-	//Демострация CopyConstuctor
-	const Fraction C(5,3,6);
-	const Fraction D=C;
-	D.print();
-	std::cout << "\n------------------------------------\n";
-	Fraction F(3, 5, 2);
-	Fraction E = C + F;
-	E.print();
-	std::cout << "\n------------------------------------\n";
+	B.reduce();
+	B.print();
+	Fraction C;
 	C.print();
+	Fraction D = C;
+	D.print();
+	Fraction E = 3;
+	E.print();
+	Fraction F(1, 2);
 	F.print();
-	std::cout << "\n------------------------------------\n";
-	std::cout << "Преобразование неправильной дроби в правильную: " << std::endl;
-	F.to_proper();
-	std::cout << "Преобразование правильной дроби в неправильную: " << std::endl;
-	F.to_improper();
-	std::cout << "Сокращение дроби: " << std::endl;
-	F.reduce();
-	
+#endif // CONSTRUCTORS_CHECK
+
+#ifdef OPERATORS_CHECK
+
+	Fraction A(1, 2);
+	Fraction B(4, 9);
+	std::cout << (A > B) << std::endl;
+
+
+#endif // OPERATORS_CHECK
+
+#ifdef TYPE_CONVERSION
+
+	std::cout << (char)43 << std::endl;	//C-like notation
+	std::cout << char(44) << std::endl;	//Functional notation
+	5.8 + 2 * '+';
+	std::cout << typeid('a' - 'A').name() << std::endl;
+	std::cout << (double)7 / 2 << std::endl;
+
+	Fraction A = 5;
+	std::cout << "\n-------------------------------\n" << std::endl;
+
+	std::cout << "\n-------------------------------\n" << std::endl;
+#endif // TYPE_CONVERSION
+
+	//Fraction B;		//Default constructor
+	//B = (Fraction)8;
+	//std::cout << B << std::endl;
+	////////////////////////
+	//Fraction C(5, 3, 8);
+	//int c = (int)C;
+	//std::cout << c << std::endl;
+	Fraction A;
+	A = 2.23;
+	std::cout << A << std::endl;
+	std::cout << UINT_MAX << std::endl;
+
+	std::cout << sizeof(long double) << std::endl;
+
+	std::cout << Fraction(0, 0) << std::endl;
+
+	int a = 2;
+	int b(3);
 
 }
