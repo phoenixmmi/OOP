@@ -1,5 +1,8 @@
 #include<iostream>
 
+class String;
+String operator+(const String& left, const String& rignt);
+
 class String {
 	int size;
 	char* str;
@@ -37,6 +40,14 @@ public:
 		//for (int i = 0; i < size; i++)this->str[i] = other.str[i];
 		std::cout << "CopyConstructor:\t" << this << std::endl;
 	}
+	String(String&& other)
+	{
+	
+		this->size = other.size;
+		this->str = other.str;
+		other.str = nullptr;
+		std::cout << " Move Construnctor:\t" << this << std::endl;
+	}
 	~String()
 	{
 		delete[] this->str;
@@ -52,7 +63,12 @@ public:
 		std::cout << "CopyAssignment:" << this << std::endl;
 		return *this;
 	}
-
+	
+		
+	 String& operator+=(const String& other)
+	{
+		 return *this = *this + other;
+	}
 
 	const char& operator[](int i)const
 	{
@@ -120,10 +136,13 @@ void main()
 	//str1.print();
 
 	//std::cout << str1 << std::endl;
-	std::cout << "__________________________" << std::endl;
 	String str1 = "Hello";
-	String str2 = "World";
+	String str2 = " World";
+	std::cout << "__________________________" << std::endl;
 	String str3 = str1 + str2;
+	std::cout << "__________________________" << std::endl;
 	str3.print();
-
+		
+	/* str1 += str2;
+	 std::cout << str1 << std::endl;*/
 }
