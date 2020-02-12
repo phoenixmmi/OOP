@@ -19,6 +19,13 @@ public:
 	{
 		return str;
 	}
+	void set_str(const char* str)
+	{
+		delete[] this->str;
+		this->size = strlen(str)+1;
+		this->str = new char[size] {};
+		strcpy(this->str, str);
+	}
 	String(int size = 80)
 	{
 		this->size = size;
@@ -99,6 +106,26 @@ String operator+(const String& left, const String& right)
 
 	return cat;
 }
+bool operator==(const String& left, const String& right)
+{
+	if(strlen(left.get_str()) != strlen(right.get_str()))return false;
+	for (int i = 0; left[i] != 0 && right[i] != 0; i++)
+	{
+		if (left[i] != right[i])return false;
+	}
+	return true;
+}
+bool operator<(const String& left, const String& right)
+{
+	/*if (strcmp(left.get_str(), right.get_str()) < 0)return true;
+	else return false;*/
+	return strcmp(left.get_str(), right.get_str()) < 0? true : false;
+	
+}
+bool operator!=(const String& left, const String& right)
+{
+	return !(left == right);
+}
 std::ostream& operator<<(std::ostream& os, const String& obj)
 {
 	/*if (!obj.get_numerator())
@@ -117,6 +144,16 @@ std::ostream& operator<<(std::ostream& os, const String& obj)
 	return os << obj.get_str();
 
 }
+std::istream& operator>>(std::istream& is, String& obj)
+{
+	char* sz_str = new char[USHRT_MAX]{};
+	is >> sz_str;
+	sz_str = (char*)realloc(sz_str, strlen(sz_str) + 1);
+	obj.set_str(sz_str);
+	delete[]sz_str;
+	return is;
+}
+
 void main()
 {
 	setlocale(LC_ALL, "");
@@ -136,13 +173,23 @@ void main()
 	//str1.print();
 
 	//std::cout << str1 << std::endl;
+	/*
+	//Проверка конкантенации.
 	String str1 = "Hello";
 	String str2 = " World";
 	std::cout << "__________________________" << std::endl;
 	String str3 = str1 + str2;
 	std::cout << "__________________________" << std::endl;
 	str3.print();
-		
+		*/
 	/* str1 += str2;
 	 std::cout << str1 << std::endl;*/
+	//Проверка оператора ввода
+	//String str;
+	//std::cout << "input the string: " << std::endl;
+	//std::cin >> str;
+	//std::cout << str << std::endl;
+	String str1 = "Hello";
+	String str2 = "World";
+	std::cout << (str1 < str2) << std::endl;
 }
