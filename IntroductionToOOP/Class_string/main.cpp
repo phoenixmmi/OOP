@@ -53,6 +53,14 @@ public:
 		other.str = nullptr;
 		std::cout << " Move Construnctor:\t" << this << std::endl;
 	}
+	String& operator= (String && other)
+	{
+		delete str;
+		this->str = other.str;
+		other.str = nullptr;
+		std::cout << "Move assignment\t" << this << std::endl;
+		return *this;
+	}
 	~String()
 	{
 		delete[] this->str;
