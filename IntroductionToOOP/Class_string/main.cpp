@@ -66,7 +66,7 @@ public:
 		delete[] this->str;
 		std::cout << "Destructor:\t" << this << std::endl;
 	}
-	String& operator=(const String other)
+	String& operator=(const String& other)
 	{
 		if (this == &other)return *this;
 		delete[] this->str;
