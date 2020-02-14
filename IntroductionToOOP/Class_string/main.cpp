@@ -137,6 +137,16 @@ bool operator!=(const String& left, const String& right)
 {
 	return !(left == right);
 }
+bool operator>=(const String& left, const String& right)
+{
+	//return left.get_str() >= right.get_str();
+	return (left > right || left == right);
+}
+bool operator<=(const String& left, const String& right)
+{
+	//return left.get_str() <= right.get_str();
+	return (left < right || left == right);
+}
 std::ostream& operator<<(std::ostream& os, const String& obj)
 {
 	/*if (!obj.get_numerator())
