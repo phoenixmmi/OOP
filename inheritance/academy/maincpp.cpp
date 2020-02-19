@@ -168,6 +168,5 @@ void main()
 	human.print();
 	Student stud("Тупенко", "Василь", 18, "Дизайн", "СТ ДВ 37");
 	stud.print();
-	Teacher teach("Наталия", "Ичанская", 58 , "AdskiyMatan", 20, 100);
-	teach.print();
+	Teacher("Наталия", "Ичанская", 58 , "AdskiyMatan", 20, 100).print();
 }
