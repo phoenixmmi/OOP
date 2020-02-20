@@ -95,7 +95,8 @@ public:
 	{
 		set_specialty(spec);
 		set_group(group);
-		this->rating = this->attendence = 0;
+		this->rating = rating;
+			this->attendence = attendence;
 		std::cout << "SConstructor:\t" << this << std::endl;
 	}
 	~Student()
@@ -163,16 +164,25 @@ public:
 class Graduate :public Student
 {
 	std::string tesis;
+	std::string curator;
 	unsigned int plagiatory;
 private:
 	void set_tesis(const std::string& tesis)
 	{
 		this->tesis = tesis;
 	}
+	void set_curator(const std::string& curator)
+	{
+		this->curator = curator;
+	}
 public:
 	const std::string& get_tesis()const
 	{
 		return tesis;
+	}
+	const std::string& get_curator()const
+	{
+		return curator;
 	}
 	const unsigned int get_plagiatory()const
 	{
@@ -188,10 +198,11 @@ public:
 	Graduate(
 		const std::string& last_name, const std::string& first_name, unsigned int age,
 		const std::string& spec, const std::string& group, unsigned int rating, unsigned int attendence,
-		const std::string& tesis, unsigned int plagiatory
+		const std::string& tesis,const std::string& curator, unsigned int plagiatory
 	) :Student(last_name, first_name, age, spec, group, rating, attendence)
 	{
 		set_tesis(tesis);
+		set_curator(curator);
 		set_plagiatory(plagiatory);
 		std::cout << "GConstructor:\t" << this << std::endl;
 	}
@@ -203,11 +214,10 @@ public:
 	void print()
 	{
 		Student::print();
-		std::cout << "|Тема дипломной работы: " << tesis << "|Процент плагиата: " << plagiatory << "%|" << std::endl;
+		std::cout << "|Тема дипломной работы: " << tesis <<"|Куратор: "<< curator<< "|Процент плагиата: " << plagiatory << "%|" << std::endl;
 	}
-
-
 };
+
 void main()
 {
 	setlocale(LC_ALL, "");
@@ -216,5 +226,8 @@ void main()
 	Student stud("Тупенко", "Василь", 18, "Дизайн", "СТ ДВ 37");
 	stud.print();
 	Teacher("Наталия", "Ичанская", 58, "AdskiyMatan", 20, 100).print();
-	Graduate("Тупенко", "Василь", 23, "Дизайн", "СТ ДВ 37", 70, 80, "Всё о дизайне табуретов", 1).print();
+	Graduate(
+		"Тупенко", "Василь", 23, 
+		"Дизайн", "СТ ДВ 37", 70, 80, 
+		"Всё о дизайне табуретов","Иван Иванович", 1).print();
 }
