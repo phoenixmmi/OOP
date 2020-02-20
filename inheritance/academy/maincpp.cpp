@@ -45,7 +45,7 @@ public:
 	}
 	void print()const
 	{
-		std::cout << last_name << "\t" << first_name << "\t" << age;
+		std::cout << last_name << "\t" << first_name << "|" << age<< "|";
 	}
 };
 class Student :public Human
@@ -106,7 +106,7 @@ public:
 	void print()const
 	{
 		Human::print();
-		std::cout << spec << "\t" << group << ", успеваемость " << rating << "%, посещаемость " << attendence << "%\n";
+		std::cout << "|"<< spec << "|" << group << "|успеваемость " << rating << "% | посещаемость " << attendence << "%|\n";
 	}
 };
 class Teacher : public Human
@@ -157,10 +157,57 @@ public:
 	void print()
 	{
 		Human::print();
-		std::cout << "Предмет:" << subject << "\tОпыт работы(в годах):" << experience << "\tУровень злости:" << evil << "%" << std::endl;
+		std::cout << "Предмет:" << subject << "|Опыт работы(в годах):" << experience << "|Уровень злости:" << evil << "%|" << std::endl;
 	}
 };
+class Graduate :public Student
+{
+	std::string tesis;
+	unsigned int plagiatory;
+private:
+	void set_tesis(const std::string& tesis)
+	{
+		this->tesis = tesis;
+	}
+public:
+	const std::string& get_tesis()const
+	{
+		return tesis;
+	}
+	const unsigned int get_plagiatory()const
+	{
+		return plagiatory;
+	}
+	
+	void set_plagiatory(unsigned int plagiatory)
+	{
+		this->plagiatory = plagiatory <= 100 ? plagiatory : 100;
+	}
+	//constructors
 
+	Graduate(
+		const std::string& last_name, const std::string& first_name, unsigned int age,
+		const std::string& spec, const std::string& group, unsigned int rating, unsigned int attendence,
+		const std::string& tesis, unsigned int plagiatory
+	) :Student(last_name, first_name, age, spec, group, rating, attendence)
+	{
+		set_tesis(tesis);
+		set_plagiatory(plagiatory);
+		std::cout << "GConstructor:\t" << this << std::endl;
+	}
+	~Graduate()
+	{
+		std::cout << "GDestrictor:\t" << this << std::endl;
+	}
+
+	void print()
+	{
+		Student::print();
+		std::cout << "|Тема дипломной работы: " << tesis << "|Процент плагиата: " << plagiatory << "%|" << std::endl;
+	}
+
+
+};
 void main()
 {
 	setlocale(LC_ALL, "");
@@ -168,5 +215,6 @@ void main()
 	human.print();
 	Student stud("Тупенко", "Василь", 18, "Дизайн", "СТ ДВ 37");
 	stud.print();
-	Teacher("Наталия", "Ичанская", 58 , "AdskiyMatan", 20, 100).print();
+	Teacher("Наталия", "Ичанская", 58, "AdskiyMatan", 20, 100).print();
+	Graduate("Тупенко", "Василь", 23, "Дизайн", "СТ ДВ 37", 70, 80, "Всё о дизайне табуретов", 1).print();
 }
