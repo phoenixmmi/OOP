@@ -1,7 +1,10 @@
 #include<iostream>
 #include<string>
 #include<regex>
+#include<Windows.h>
 //#define POLYMORPHYSM
+//#define REGEX_NAME
+#define REGEX_GROUP
 class Human {
 	std::string last_name;
 	std::string first_name;
@@ -23,6 +26,9 @@ public:
 	{
 		//std::regex exp = ("\\w");
 		this->last_name = last_name;
+		std::regex rgx_ru("[À-ß]{1}[à-ÿ]{1,10}");
+		std::regex rgx_eng("[A-Z][a-z]{1,10}");
+		std::cout << std::regex_match(this->last_name, rgx_eng, std::regex_constants::match_default);
 	}
 	void set_first_name(const std::string& first_name)
 	{
@@ -268,9 +274,24 @@ void main()
 		delete group[i];
 	}*/
 #endif
-
+#ifdef REGEX_NAME
 	std::string name;
 	std::cout << "Input name: "; std::cin >> name;
 	std::regex rgx("[A-Z][a-z]{1,10}");
 	std::cout << std::regex_match(name, rgx, std::regex_constants::match_default) << std::endl;
+	/*std::regex rgx_ru("[À-ß]{1}[à-ÿ]{1,10}");
+	std::regex rgx_eng("[A-Z][a-z]{1,10}");
+	std::cout << std::regex_match(this->last_name, rgx_eng, std::regex_constants::match_default);*/
+#endif//REGEX_NAME
+
+#ifdef REGEX_GROUP
+	std::string group;
+	std::cout << "input group: "; //std::cin >> group;
+	std::regex rgx("(ST|PS(_| )(SB|VS))[_ \-](PU|PV|ITU|ITV|DU|DV)[_ \-]\\d{2}[abv]?"); //([a-b]|v)?  = [abv]?
+	getline(std::cin, group);
+	std::regex rgx_replace(" |\-");
+	group = std::regex_replace(group,rgx_replace,"_", std::regex_constants::match_default);
+	std::cout << std::regex_match(group, rgx, std::regex_constants::match_default) << std::endl;
+	std::cout << group << std::endl;
+#endif
 }
