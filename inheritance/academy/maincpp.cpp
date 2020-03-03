@@ -4,7 +4,10 @@
 #include<Windows.h>
 //#define POLYMORPHYSM
 //#define REGEX_NAME
-#define REGEX_GROUP
+//#define REGEX_GROUP
+//#define REGEX_EMAIL
+//#define REGEX_PHONE
+#define CONVERT_PHONE
 class Human {
 	std::string last_name;
 	std::string first_name;
@@ -293,5 +296,36 @@ void main()
 	group = std::regex_replace(group,rgx_replace,"_", std::regex_constants::match_default);
 	std::cout << std::regex_match(group, rgx, std::regex_constants::match_default) << std::endl;
 	std::cout << group << std::endl;
+#endif
+
+#ifdef REGEX_EMAIL
+	std::string email="vasya@gmail.fg.sf";
+	/*std::cout << "Input email: "; std::cin >> email;*/
+	std::regex rgx("\\w{3,50}@[a-z]{1,20}[.][a-z]{2,3}(.[a-z]{2})?");
+	std::cout << std::regex_match(email, rgx, std::regex_constants::match_default) << std::endl;
+
+#endif
+
+#ifdef REGEX_PHONE
+	std::string phone = "+38(099)123-45-67";
+	/*std::regex rgx("\\+\\d{2}\\(\\d{3}\\)\\d{3}(-\\d{2}){2}");*/
+	std::regex rgx(R"(\+\d{2}\(\d{3}\)\d{3}(-\d{2}){2})");
+std::cout << (R"(\\+\\d{2}\\(\\d{3}\\)\\d{3}(-\\d{2}){2})")<< std::endl;
+	std::cout << std::regex_match(phone, rgx, std::regex_constants::match_default) << std::endl; 
+#endif
+
+#ifdef CONVERT_PHONE
+	std::string phone = "380991234567";
+	std::regex rgx("\\d{12}");
+	if (std::regex_match(phone, rgx, std::regex_constants::match_default))
+	{
+
+		phone.insert(0, "+");
+		phone.insert(phone.size() - 10, "(");
+		phone.insert(phone.size() - 7, ")");
+		phone.insert(phone.size() - 4, "-");
+		phone.insert(phone.size() - 2, "-");
+	}
+	std::cout << phone << std::endl;
 #endif
 }
