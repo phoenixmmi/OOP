@@ -23,8 +23,8 @@ public:
 	~Element()
 	{
 		
-		std::cout << "EDestructor:\t" << this << std::endl;
 		count--;
+		std::cout << "EDestructor:\t" << this << std::endl;
 	}
 	
 
@@ -39,16 +39,43 @@ public:
 	Iterator(Element* Temp)
 	{
 		this->Temp = Temp;
+		std::cout << "ITConstuctor" << this << std::endl;
 	}
+	/*Iterator(const Element* Temp)
+	{
+		this->Temp = (Element*)Temp;
+	}*/
 	~Iterator()
 	{
-
+		std::cout << "ITdesctuctor" << this << std::endl;
 	}
 
 	Iterator& operator++()
 	{
 		Temp = Temp->pNext;
 		return *this;
+	}
+
+	Iterator& operator++(int) 
+	{
+		/*Iterator old = *this;
+		Temp = Temp->pNext;
+		return old;*/
+		Temp = Temp->pNext;
+		return *this;
+	}
+	bool operator==(const Iterator& other)const
+	{
+		return this->Temp == other.Temp;
+	}
+	bool operator!=(const Iterator& other)const
+	{
+		return this->Temp != other.Temp;
+	}
+
+	int operator*()
+	{
+		return Temp->Data;
 	}
 };
 
@@ -60,6 +87,10 @@ class ForwardList
 	unsigned int Size;
 public:
 	const Element* get_head()const
+	{
+		return Head;
+	}
+	Element* get_head()
 	{
 		return Head;
 	}
@@ -330,4 +361,10 @@ void main()
 	//list3 = list + list2;
 	list3.print();
 
+
+	for (Iterator it = list3.get_head(); it != nullptr; it++)
+	{
+		std::cout << *it <<  "\t";
+	}
+	std::cout << std::endl;
 }
