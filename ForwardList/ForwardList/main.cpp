@@ -268,7 +268,9 @@ ForwardList operator+(const ForwardList& left,const ForwardList& right)
 {
 	ForwardList buffer = left;
 	for (const Element* Temp = right.get_head(); Temp != nullptr; Temp = Temp->getpNext())
+	{
 		buffer.push_back(Temp->getData());
+	}
 	return buffer;
 }
 //#define BASE_FUNCTIONS_CHECK

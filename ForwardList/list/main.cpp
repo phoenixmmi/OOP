@@ -11,6 +11,7 @@ class List
 		Element* pNext;
 		Element* pPrev;
 	public:
+
 		Element(int data, Element* pNext = nullptr, Element* pPrev = nullptr) :data(data), pNext(pNext), pPrev(pPrev)
 		{
 			std::cout << "EConstructor\t" << this << std::endl;
@@ -25,7 +26,14 @@ class List
 	Element* tail;// Указывает на конец списка.
 	unsigned int size;//Количество элементов списка.
 public:
-
+	const Element* get_head()const
+	{
+		return head;
+	}
+	Element* get_head()
+	{
+		return head;
+	}
 	class Iterator
 	{
 		Element* Temp;
@@ -73,11 +81,33 @@ public:
 		//////////////////////
 	};
 
+
+	Iterator begin()
+	{
+		return this->head;
+	}
+	Iterator end()
+	{
+		return nullptr;
+	}
+	const Iterator begin()const
+	{
+		return this->head;
+	}
+	const Iterator end()const
+	{
+		return nullptr;
+	}
 	List()
 	{
 		head = tail = nullptr;
 		size = 0;
 		std::cout << "LConstructor:\t" << this << std::endl;
+	}
+	List(int size) :List()
+	{
+		while (size--)push_front(0);
+		std::cout << "ConstructorSIZE" << std::endl;
 	}
 	~List()
 	{
@@ -91,11 +121,18 @@ public:
 	}
 	List(const std::initializer_list<int>& il) :List()
 	{
-		for (int const* it = il.begin(); it != il.end(); it++)
+		std::cout << typeid(il.begin()).name() << std::endl;
+		/*for (int const* it = il.begin(); it != il.end(); it++)
 		{
-			push_back(*it);
+				push_back(*it);
+		}*/
+		for (int i : il)
+		{
+			push_back(i);
 		}
 	}
+
+
 
 	List(const List& other) :List()
 	{
@@ -106,18 +143,38 @@ public:
 		for (Iterator it = other.head; it != nullptr; it++)push_back(*it);
 		std::cout << "LCopyConstructor:\t" << this << std::endl;
 	}
+	List(List&& other)
+	{
+		this->head = other.head;
+		this->tail = other.tail;
+		this->size = other.size;
+		other.head = nullptr;
+		other.tail = nullptr;
+		std::cout << "LMoveConstructor:\t" << this << std::endl;
+	}
 	//operators
 	List& operator=(const List& other)
 	{
 		if (this == &other)return *this;
-		{
-
-		}
 		while (head)pop_front();
-		for (Element* Temp = other.head; Temp; Temp = Temp -> pNext)push_back(Temp->data);
+		for (Element* Temp = other.head; Temp; Temp = Temp->pNext)push_back(Temp->data);
 		std::cout << "LCopyAssignment:\t" << this << std::endl;
 		return *this;
 	}
+	
+	List& operator=(List&& other)
+	{
+		while (head)pop_front();
+		this->head = other.head;
+		this->tail = other.tail;
+		this->size = other.size;
+		other.head = nullptr;
+		other.tail = nullptr;
+		std::cout << "LMoveAssignment:\t" << this << std::endl;
+		return *this;
+	}
+
+	
 	// adding elements:
 	void push_front(int data)
 	{
@@ -150,10 +207,10 @@ public:
 			size++;
 			return;
 		}
-		tail = tail->pNext = new Element(data,tail->pNext,tail);
+		tail = tail->pNext = new Element(data, tail->pNext, tail);
 		size++;
 	}
-	
+
 	void insert(int index, int data)
 	{
 		if (index > size)
@@ -177,26 +234,26 @@ public:
 		New->pPrev = Temp->pPrev;
 		Temp->pPrev->pNext = New;
 		Temp->pPrev = New;*/
-	
+
 		Temp->pPrev = Temp->pPrev->pNext = new Element(data, Temp, Temp->pPrev);
 		size++;
 
-	
+
 	}
 	//removind elements:
 	void pop_front()
 	{
-	
-		/*Element* buffer = head;	                       
-		head = head->pNext;	                            
-		head->pPrev = nullptr;	                           
+
+		/*Element* buffer = head;
+		head = head->pNext;
+		head->pPrev = nullptr;
 		delete buffer;
 		size--;*/
 		if (head == tail)
 		{
 			delete head;
 			head = tail = nullptr;
-			if(size)size--;
+			if (size)size--;
 			return;
 		}
 		head = head->pNext;
@@ -215,7 +272,7 @@ public:
 		{
 			delete tail;
 			head = tail = nullptr;
-			if(size)size--;
+			if (size)size--;
 			return;
 		}
 		tail = tail->pPrev;
@@ -233,12 +290,12 @@ public:
 			pop_front();
 			return;
 		}
-		if (index == size-1)
+		if (index == size - 1)
 		{
 			pop_back();
 			return;
 		}
-		
+
 		Element* Temp;
 		if (index < size / 2)
 		{
@@ -275,16 +332,28 @@ public:
 		}
 		std::cout << "List size:\t" << size << std::endl;
 	}
+
 };
 
+List operator+(const List& left,const List& right)
+{
+	List buffer = left;//copyConstructor
+	for (List::Iterator it = right.begin(); it != right.end(); it++)
+	{
+		buffer.push_back(*it);
+	}
+	std::cout << "Global operator +\n";
+	return buffer;
+}
+
 //#define BASE_CHECK
-//#define CONSTCUTORS_CHECK
+//#define CONSTRUCTORS_CHECK
 void main()
 {
 	setlocale(LC_ALL, "");
 
 	int n;
-	std::cout << "Input list size: "; std::cin >> n;
+	//std::cout << "Input list size: "; std::cin >> n;
 	//List list;
 #ifdef ADDING_ELEMENTS_PUSH_FRONT
 	std::cout << "\n-----------------PUSH FRONT--------\n";
@@ -347,7 +416,7 @@ void main()
 	list.print_reverse();
 
 	List list2 = list;
-	//list2 = list;
+	list2 = list;
 	list2.print();
 	list2.print_reverse();
 #endif
@@ -359,9 +428,27 @@ void main()
 	}
 	std::cout << std::endl;
 
-	/*List list = { 3,5,8,13,21 };
-	for (int i : list)
+	List list = { 3,5,8,13,21 };
+	for (List::Iterator it = list.begin(); it != list.end(); it++)
+		std::cout << *it << "\t";
+	std::cout << std::endl;
+
+	List list2 = { 34,55,89 };
+	for (List::Iterator it = list2.begin(); it != list2.end(); it++)
 	{
-		std::cout << i << std::endl;
-	}*/
+		std::cout << *it << "\t";
+	}
+	std::cout << std::endl;
+	std::cout << "\n----------------------------\n";
+	//List list = { 3,5,8,13,21 };
+	/*for (int i : list + list2)
+	{
+			std::cout << i << "\t";	
+	}
+	std::cout << std::endl;*/
+	std::cout << "\n----------------------------\n";
+	List list3;
+	list3 = list + list2;
+	list3.print();
+	std::cout << "\n----------------------------------\n";
 }
