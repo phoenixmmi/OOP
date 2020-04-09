@@ -32,6 +32,37 @@ public:
 		clear(this->Root);
 		std::cout << "TDestructor" << this << std::endl;
 	}
+	BTree(const std::initializer_list<int>& il) :BTree()
+	{
+		for (int i : il)
+		{
+			insert(i);
+		}
+	}
+	BTree(const BTree& other):BTree()
+	{
+		copy(this->Root, other.Root);
+		std::cout << "BTCopyConstructor"<<this << std::endl;
+	}
+
+	BTree& operator=(const BTree& other)
+	{
+		if (this == &other)return *this;
+		clear();
+		copy(this->Root, other.Root);
+		std::cout << "BTCopyassignment" << this << std::endl;
+		return *this;
+	}
+	/*BTree& operator=(const BTree& other)
+	{
+		//if (this == &other)return *this;
+		if (this == nullptr)return *this;
+		for (Element* i = other.Root; i != nullptr; i++)
+		{
+			insert(Root->Data);
+		}
+		return *this;
+	}*/
 	void insert(int Data)
 	{
 		insert(Data, this->Root);
@@ -72,6 +103,13 @@ public:
 		std::cout << std::endl;
 	}
 private:
+	void copy(Element*& thisRoot, Element* otherRoot)
+	{
+		if (otherRoot == nullptr)return;
+		thisRoot = new Element(otherRoot->Data);
+		copy(thisRoot->pLeft, otherRoot->pLeft);
+		copy(thisRoot->pRight, otherRoot->pRight);
+	}
 	//Adding elements:
 	void insert(int Data, Element* Root)
 	{
@@ -99,7 +137,7 @@ private:
 		{
 			erase(Data, Root->pLeft);
 		}
-		else if(Data> Root->Data)
+		else if (Data > Root->Data)
 		{
 			erase(Data, Root->pRight);
 		}
@@ -110,7 +148,7 @@ private:
 				delete Root;
 				Root = nullptr;
 			}
-			else if (count(Root->pLeft)>count(Root->pRight))
+			else if (count(Root->pLeft) > count(Root->pRight))
 			{
 				Root->Data = maxValue(Root->pLeft);
 				erase(maxValue(Root->pLeft), Root->pLeft);
@@ -122,7 +160,7 @@ private:
 			}
 
 		}
-	
+
 	}
 	void clear(Element* Root)
 	{
@@ -233,12 +271,13 @@ void main()
 	T800.print();
 #endif
 	BTree T800 = { 50,25,30,75,64,85 };
-
-	int value;
+	T800.print();
+	/*int value;
 	std::cout << "Type value to erase: "; std::cin >> value;
 	T800.erase(value);
-	T800.print();
+	T800.print();*/
 
-	BTree T1000 = T800; 
+	BTree T1000;// = T800;
+	T1000 = T800;
 	T1000.print();
 }
